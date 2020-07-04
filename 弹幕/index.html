@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>弹幕</title>
+
+<head>
+
+</head>
+<link rel="stylesheet" href="tz.css" />
+<style>
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	html,body{
+		height: 100%;
+		user-select: none;
+	}
+	.screen{
+		overflow: hidden;
+		position: relative;
+		height: 100%;
+		background-color:rgba(0,0,0,0.8) ;
+	}
+	.send{
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 80px;
+		line-height: 80px;
+		background-color: rgba(0,0,0,0.8);
+		text-align: center;
+	}
+	.input{
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin: -20px -350px;
+		font-size: 0;
+	}
+	.text{
+		float: left;
+		width: 600px;
+		height: 40px;
+		border: none;
+		border-radius: 5px 0 0 5px;
+
+	}
+	.btn{
+		float: left;
+		width: 100px;
+		background-color: #65c33d;
+		line-height: 40px;
+		font-size: 16px;
+		color: #fff;
+		cursor: pointer;
+	}
+	.s_show div{
+		position: absolute;
+		font-size: 24px;
+		font-weight: bold;
+	}
+	
+
+</style>
+
+<body>
+	
+
+	<div class="screen">
+		<div class="send">
+			<div class="input clearfix">
+				<input type="text" class="text">
+				<div class="btn">发送弹幕</div>
+			</div>
+		</div>
+		<div class="s_show">
+			<div class="magictime perspectiveUp">1111</div>
+		</div>
+	</div>
+
+</body>
+
+</html>
+<script src="jquery.min.js"></script>
+<script src="jquery.fullPage.min.js"></script>
+<script>
+	// 1.获取弹幕对象
+	//2.随机区间
+	//移动函数
+	//发送弹幕
+	var objShow = document.querySelectorAll('.s_show div'),
+		oBox = document.querySelector('.screen'),
+		oShow = document.querySelector('.s_show'),
+		oBtn = document.querySelector('.btn'),
+		oTxt = document.querySelector('.text');
+	console.log(objShow)
+	oBtn.onclick = function () {
+		var odiv = document.createElement('div');
+		odiv.innerHTML = oTxt.value;
+		odiv.className='magin perspectiveUp';
+		oShow.appendChild(odiv)
+		oTxt.value='';
+		init(odiv);
+	}
+	for (var i = 0; i < objShow.length; i++) {
+		init(objShow[i]);
+
+	}
+	// 2.随机区间
+	function init(obj) {
+		var screenHeight = document.documentElement.clientHeight;//获取屏幕高度
+		var screenWidth = document.documentElement.clientWidth;//获取屏幕宽度
+		var oBoxHight = oBox.clientHeight;       //下框的高度
+		maxLeft = screenWidth - obj.clientWidth;
+		maxTop = screenHeight - oBoxHight - obj.clientHeight;   //弹幕区域高度 
+		obj.style.top = Math.random() * maxTop + 'px';
+		obj.style.left = maxLeft + 'px';
+		obj.style.color = randomColor();
+		move(obj, maxLeft)   //执行函数
+		// console.log(Math.floor(Math.random() * 16).toString(16))
+		// console.log(randomColor())
+	}
+
+	//创建一个随机颜色
+	function randomColor() {
+		var color = '#';
+		for (var i = 0; i < 6; i++) {
+			color += Math.floor(Math.random() * 16).toString(16);
+		}
+		return color;
+	}
+	// 获取移动对象
+	function move(obj, maxLeft) {
+		var speed = 3;
+		maxLeft -= speed;
+		if (maxLeft > -obj.clientWidth) {
+			obj.style.left = maxLeft + 'px'; //每次减完设置自己
+			requestAnimationFrame(function () {
+				move(obj, maxLeft)
+			}); //H5新增动画函数
+		} else {
+			// init(obj)   //初始化对象
+			oShow.removeChild(obj)  //删除子节点
+		}
+
+	}
+</script>
